@@ -1,0 +1,11 @@
+#!/bin/bash
+#PBS -l nodes=1:ppn=8,walltime=0:30:00,vmem=40gb
+#PBS -N app-sh2peaks
+#PBS -V
+
+set -e
+set -x
+
+[ ! -f peaks.nii.gz ] && time singularity exec -e docker://brainlife/mrtrix3:3.0_RC3 ./fod_to_peaks.sh
+
+[ -f peaks.nii.gz ] && mkdir -p peaks && mv peaks.nii.gz ./peaks/ && echo "complete!" && exit 0 || echo "something went wrong. check derivatives" && exit 1
